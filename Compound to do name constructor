@@ -1,0 +1,186 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_todo/home.dart';
+void main(List<String> args) {
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    title: "To Do",
+    home: HomePage(),
+  ));
+}
+-----------------------------------------------------
+import 'package:flutter/material.dart';
+import 'package:flutter_todo/singleTodoItem.dart';
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String title = '';
+  final textControler = TextEditingController();
+
+  List<Todo> todoData = [
+    Todo(
+      id: "todo_1",
+      title: "Test title 1",
+      time: null,
+    ),
+    Todo(
+      id: "todo_2",
+      title: "Test title 2",
+      time: null,
+    ),
+    Todo(
+      id: "todo_3",
+      title: "Test title 3",
+      time: null,
+    ),
+  ];
+
+  void _addTodo() {
+    Todo todo = Todo(
+      id: DateTime.now().toString(),
+      title: textControler.text,
+      time: DateTime.now(),
+    );
+    setState(() {
+      todoData.add(todo);
+    });
+    textControler.text = '';
+    title = '';
+  }
+
+  void delateTodo(String id) {
+    setState(() {
+      todoData.removeWhere((element) => element.id == id);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("ToDo App"),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(15),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    onChanged: (v) {
+                      setState(() {
+                        title = v;
+                      });
+                    },
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),
+                    controller: textControler,
+                    decoration: InputDecoration(
+                      hintText: "Add Title",
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: title.length <= 0
+                      ? null
+                      : () {
+                          _addTodo();
+                        },
+                  icon: Icon(Icons.add),
+                  color: Colors.green,
+                )
+              ],
+            ),
+            SizedBox(height: 40),
+            Expanded(
+              child: ListView.builder(
+                itemCount: todoData.length,
+                itemBuilder: (ctx, i) {
+                  return SingleTodoItem(
+                    index: i + 1,
+                    id: todoData[i].id,
+                    title: todoData[i].title,
+                    datetime: todoData[i].time,
+                    delatetod: delateTodo,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+class Todo {
+  final String? id;
+  final String? title;
+  final DateTime? time;
+
+  Todo({this.id, this.title, this.time});
+}
+---------------------------------------------------------------------------------
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class SingleTodoItem extends StatelessWidget {
+  final int? index;
+  final String? id;
+  final String? title;
+  final DateTime? datetime;
+  final Function? delatetod;
+  SingleTodoItem(
+      {this.index, this.id, this.title, this.datetime, this.delatetod});
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 5,
+        ),
+        child: Row(
+          children: [
+            Text(
+              "$index",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(width: 20),
+            Text(
+              "$title",
+              style: TextStyle(
+                fontSize: 22,
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              datetime != null
+                  ? "${DateFormat('dd-mm-yyy').format(datetime!)}"
+                  : "No Date",
+            ),
+            Spacer(),
+            IconButton(
+              onPressed: () {
+                delatetod!(id);
+              },
+              icon: Icon(
+                Icons.delete,
+                size: 25,
+                color: Colors.red,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
