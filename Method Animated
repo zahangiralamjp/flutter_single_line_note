@@ -1,0 +1,52 @@
+import 'package:flutter/material.dart';
+class Day7 extends StatefulWidget {
+  const Day7({ Key? key }) : super(key: key);
+
+  @override
+  State<Day7> createState() => _Day7State();
+}
+
+class _Day7State extends State<Day7> {
+  String num = "";
+  double w = 300;
+  double h = 200;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          AnimatedContainer(
+            width: w,
+            height: h,
+            color: Colors.amber,
+           duration: Duration(milliseconds: 300),
+            
+            curve: Curves.bounceOut,
+
+
+          ), SizedBox(height: 50,),
+          Text("data $num"),
+          InkWell(
+            onTap: () {
+              call();
+            },
+            child: Container(
+              width:300,height: 50,
+              color: Colors.brown,
+            ),
+          ),
+        ],),
+      ),
+    );
+  }
+  call(){
+    setState(() {
+      w+=10;
+      h+=10;
+      num = "Hello Ex";
+    });
+  }
+  calulate(int num1, int num2){
+    return num1+num2;
+  }
+}
